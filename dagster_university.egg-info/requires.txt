@@ -1,0 +1,13 @@
+dagster==1.10.2
+dagster-cloud
+dagster-duckdb
+matplotlib
+geopandas
+kaleido
+pandas
+plotly
+shapely
+
+[dev]
+dagster-webserver
+pytest

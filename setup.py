@@ -4,9 +4,10 @@ setup(
     name="dagster_university",
     packages=find_packages(exclude=["dagster_university_tests"]),
     install_requires=[
-        "dagster==1.6.*",
+        "dagster==1.10.2",
         "dagster-cloud",
         "dagster-duckdb",
+        "matplotlib",
         "geopandas",
         "kaleido",
         "pandas",
