@@ -1,9 +1,7 @@
-import duckdb
-import os
 import requests
+from dagster_duckdb import DuckDBResource
 from . import constants
 import dagster as dg
-from dagster._utils.backoff import backoff
 
 
 @dg.asset(
@@ -42,12 +40,12 @@ def taxi_zones_file() -> None:
 
 
 @dg.asset(
-    deps=["taxi_trips_file"],
+    deps=[dg.AssetKey(["taxi_trips_file"])],
     kinds={"duckdb"},
     tags={"pii": "false"},
     owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"]
 )
-def taxi_trips() -> None:
+def taxi_trips(database: DuckDBResource) -> None:
     """
       The raw taxi trips dataset, loaded into a DuckDB database
     """
@@ -68,24 +66,17 @@ def taxi_trips() -> None:
         );
     """
 
-    conn = backoff(
-        fn=duckdb.connect,
-        retry_on=(RuntimeError, duckdb.IOException),
-        kwargs={
-            "database": os.getenv("DUCKDB_DATABASE"),
-        },
-        max_retries=10,
-    )
-    conn.execute(query)
+    with database.get_connection() as conn:
+        conn.execute(query)
 
 
 @dg.asset(
-    deps=["taxi_zones_file"],
+    deps=[dg.AssetKey(["taxi_zones_file"])],
     kinds={"duckdb"},
     tags={"pii": "false"},
     owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"]
 )
-def taxi_zones() -> None:
+def taxi_zones(database: DuckDBResource) -> None:
     query = f"""
         create or replace table zones as (
             select
@@ -97,14 +88,7 @@ def taxi_zones() -> None:
         );
     """
 
-    conn = backoff(
-        fn=duckdb.connect,
-        retry_on=(RuntimeError, duckdb.IOException),
-        kwargs={
-            "database": os.getenv("DUCKDB_DATABASE"),
-        },
-        max_retries=10,
-    )
-    conn.execute(query)
+    with database.get_connection() as conn:
+        conn.execute(query)
 
 
