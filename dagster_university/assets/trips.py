@@ -7,7 +7,8 @@ import dagster as dg
 @dg.asset(
     kinds={"parquet"},
     tags={"source": "nyc_open_data_portal", "pii": "false"},
-    owners=["ada.dagster@example.com", "team:data_eng"]
+    owners=["ada.dagster@example.com", "team:data_eng"],
+    group_name="data_eng"
 )
 def taxi_trips_file() -> None:
     """
@@ -25,7 +26,8 @@ def taxi_trips_file() -> None:
 @dg.asset(
     kinds={"csv"},
     tags={"source": "nyc_open_data_portal", "pii": "false"},
-    owners=["ada.dagster@example.com", "team:data_eng"]
+    owners=["ada.dagster@example.com", "team:data_eng"],
+    group_name="data_eng"
 )
 def taxi_zones_file() -> None:
     """
@@ -43,7 +45,8 @@ def taxi_zones_file() -> None:
     deps=[dg.AssetKey(["taxi_trips_file"])],
     kinds={"duckdb"},
     tags={"pii": "false"},
-    owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"]
+    owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"],
+    group_name="data_eng"
 )
 def taxi_trips(database: DuckDBResource) -> None:
     """
@@ -74,7 +77,8 @@ def taxi_trips(database: DuckDBResource) -> None:
     deps=[dg.AssetKey(["taxi_zones_file"])],
     kinds={"duckdb"},
     tags={"pii": "false"},
-    owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"]
+    owners=["ada.dagster@example.com", "john.dagster@example.com", "team:data_eng"],
+    group_name="data_eng"
 )
 def taxi_zones(database: DuckDBResource) -> None:
     query = f"""

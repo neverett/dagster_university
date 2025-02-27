@@ -17,6 +17,7 @@ from . import constants
     key_prefix="manhattan",
     tags={"pii": "false"},
     owners=["sally.dagster@example.com", "team:data_analysis"],
+    group_name="analytics"
 )
 def manhattan_stats(database: DuckDBResource) -> None:
     query = """
@@ -46,7 +47,8 @@ def manhattan_stats(database: DuckDBResource) -> None:
     kinds={"matplotlib"},
     tags={"pii": "false"},
     key_prefix="manhattan",
-    owners=["sally.dagster@example.com", "team:data_analysis"]
+    owners=["sally.dagster@example.com", "team:data_analysis"],
+    group_name="analytics"
 )
 def manhattan_map() -> None:
     trips_by_zone = gpd.read_file(constants.MANHATTAN_STATS_FILE_PATH)
@@ -67,7 +69,8 @@ def manhattan_map() -> None:
     deps=[dg.AssetKey(["taxi_trips"])],
     kinds={"pandas", "csv"},
     tags={"pii": "false"},
-    owners=["sally.dagster@example.com", "team:data_analysis"]
+    owners=["sally.dagster@example.com", "team:data_analysis"],
+    group_name="analytics"
 )
 def trips_by_week(database: DuckDBResource) -> None:
 
